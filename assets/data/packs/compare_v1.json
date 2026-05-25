@@ -1,0 +1,107 @@
+{
+  "id": "compare_v1",
+  "mode": "compare",
+  "version": 1,
+  "questions": [
+    {
+      "id": "cmp-0001",
+      "mode": "compare",
+      "difficulty": "easy",
+      "snapshot_date": "2026-05-24",
+      "source": "hand-written-placeholder",
+      "left": { "word": "東京", "hit_count": 980000000 },
+      "right": { "word": "京都", "hit_count": 420000000 },
+      "explanation": "首都圏の検索ボリュームは関西の主要都市よりずっと多い傾向。"
+    },
+    {
+      "id": "cmp-0002",
+      "mode": "compare",
+      "difficulty": "easy",
+      "snapshot_date": "2026-05-24",
+      "source": "hand-written-placeholder",
+      "left": { "word": "犬", "hit_count": 540000000 },
+      "right": { "word": "猫", "hit_count": 720000000 },
+      "explanation": "オンラインでは猫関連コンテンツの方が情報密度が高い。"
+    },
+    {
+      "id": "cmp-0003",
+      "mode": "compare",
+      "difficulty": "normal",
+      "snapshot_date": "2026-05-24",
+      "source": "hand-written-placeholder",
+      "left": { "word": "ラーメン", "hit_count": 310000000 },
+      "right": { "word": "うどん", "hit_count": 145000000 },
+      "explanation": "ラーメンはB級グルメ・店舗情報・レシピで圧倒的。"
+    },
+    {
+      "id": "cmp-0004",
+      "mode": "compare",
+      "difficulty": "normal",
+      "snapshot_date": "2026-05-24",
+      "source": "hand-written-placeholder",
+      "left": { "word": "iPhone", "hit_count": 2100000000 },
+      "right": { "word": "Android", "hit_count": 2800000000 },
+      "explanation": "OSとしてのAndroidはより広範な文脈で言及される。"
+    },
+    {
+      "id": "cmp-0005",
+      "mode": "compare",
+      "difficulty": "easy",
+      "snapshot_date": "2026-05-24",
+      "source": "hand-written-placeholder",
+      "left": { "word": "夏", "hit_count": 1200000000 },
+      "right": { "word": "冬", "hit_count": 980000000 },
+      "explanation": "夏休み・夏祭りなどイベント関連語彙が多い。"
+    },
+    {
+      "id": "cmp-0006",
+      "mode": "compare",
+      "difficulty": "normal",
+      "snapshot_date": "2026-05-24",
+      "source": "hand-written-placeholder",
+      "left": { "word": "サッカー", "hit_count": 620000000 },
+      "right": { "word": "野球", "hit_count": 480000000 },
+      "explanation": "国際大会の影響でサッカー関連が多め。"
+    },
+    {
+      "id": "cmp-0007",
+      "mode": "compare",
+      "difficulty": "hard",
+      "snapshot_date": "2026-05-24",
+      "source": "hand-written-placeholder",
+      "left": { "word": "コーヒー", "hit_count": 520000000 },
+      "right": { "word": "紅茶", "hit_count": 240000000 },
+      "explanation": "コーヒー文化の発信量が多い。"
+    },
+    {
+      "id": "cmp-0008",
+      "mode": "compare",
+      "difficulty": "hard",
+      "snapshot_date": "2026-05-24",
+      "source": "hand-written-placeholder",
+      "left": { "word": "桜", "hit_count": 410000000 },
+      "right": { "word": "紅葉", "hit_count": 180000000 },
+      "explanation": "春の風物詩としての言及量が圧倒的。"
+    },
+    {
+      "id": "cmp-0009",
+      "mode": "compare",
+      "difficulty": "normal",
+      "snapshot_date": "2026-05-24",
+      "source": "hand-written-placeholder",
+      "left": { "word": "Python", "hit_count": 920000000 },
+      "right": { "word": "JavaScript", "hit_count": 1100000000 },
+      "explanation": "Web文脈ではJavaScriptが優勢。"
+    },
+    {
+      "id": "cmp-0010",
+      "mode": "compare",
+      "difficulty": "easy",
+      "snapshot_date": "2026-05-24",
+      "source": "hand-written-placeholder",
+      "left": { "word": "ピザ", "hit_count": 380000000 },
+      "right": { "word": "寿司", "hit_count": 420000000 },
+      "explanation": "寿司は世界的にも認知度が高い和食。"
+    }
+  ]
+}

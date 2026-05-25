@@ -1,0 +1,50 @@
+# Expo
+.expo/
+dist/
+web-build/
+expo-env.d.ts
+
+# Native
+android/
+ios/
+
+# Node
+node_modules/
+npm-debug.*
+yarn-debug.*
+yarn-error.*
+
+# Bun
+.bun/
+
+# Vercel
+.vercel/
+
+# macOS
+.DS_Store
+*.pem
+
+# Local env
+.env*.local
+.env
+
+# Build artifacts
+*.tsbuildinfo
+*.jsbundle
+
+# Test
+coverage/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+
+# OS
+Thumbs.db
+
+# Tooling caches
+tools/mcp_search_server/.cache/
+tools/mcp_search_server/.venv/
+tools/mcp_search_server/.env
+__pycache__/

@@ -1,0 +1,29 @@
+[project]
+name = "mcp-search-server"
+version = "0.1.0"
+description = "Google Custom Search hit-count MCP server for andokensaku question generation"
+readme = "README.md"
+authors = [
+    { name = "rie622skt", email = "147387050+rie622skt@users.noreply.github.com" }
+]
+requires-python = ">=3.13"
+dependencies = [
+    "aiosqlite>=0.20",
+    "httpx>=0.27",
+    "mcp[cli]>=1.2",
+    "pydantic>=2.8",
+    "pydantic-settings>=2.5",
+]
+
+[dependency-groups]
+dev = [
+    "pytest>=8.0",
+    "pytest-asyncio>=0.24",
+]
+
+[project.scripts]
+mcp-search-server = "mcp_search_server:main"
+
+[build-system]
+requires = ["uv_build>=0.11.16,<0.12.0"]
+build-backend = "uv_build"

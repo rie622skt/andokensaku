@@ -1,0 +1,13 @@
+node_modules
+.expo
+.expo-shared
+dist
+ios
+android
+__tests__
+tools
+*.log
+.env*
+!.env.production
+bun.lock
+.maestro

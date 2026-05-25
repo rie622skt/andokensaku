@@ -1,0 +1,46 @@
+{
+  "id": "stairs_v1",
+  "mode": "stairs",
+  "version": 1,
+  "runs": [
+    {
+      "id": "stair-0001",
+      "mode": "stairs",
+      "difficulty": "normal",
+      "snapshot_date": "2026-05-24",
+      "source": "hand-written-placeholder",
+      "seed_word": "わさび",
+      "seed_hit_count": 25000000,
+      "max_steps": 12,
+      "step_rules": {
+        "must_exceed": true,
+        "choice_count_per_step": 4
+      },
+      "word_pool": [
+        { "word": "宇宙人", "hit_count": 18000000 },
+        { "word": "ハチミツ", "hit_count": 36000000 },
+        { "word": "南極", "hit_count": 28000000 },
+        { "word": "雪山", "hit_count": 32000000 },
+        { "word": "ピアノ", "hit_count": 68000000 },
+        { "word": "落語", "hit_count": 14000000 },
+        { "word": "うどん", "hit_count": 145000000 },
+        { "word": "紅葉", "hit_count": 180000000 },
+        { "word": "紅茶", "hit_count": 240000000 },
+        { "word": "ラーメン", "hit_count": 310000000 },
+        { "word": "桜", "hit_count": 410000000 },
+        { "word": "京都", "hit_count": 420000000 },
+        { "word": "野球", "hit_count": 480000000 },
+        { "word": "コーヒー", "hit_count": 520000000 },
+        { "word": "犬", "hit_count": 540000000 },
+        { "word": "サッカー", "hit_count": 620000000 },
+        { "word": "猫", "hit_count": 720000000 },
+        { "word": "Python", "hit_count": 920000000 },
+        { "word": "東京", "hit_count": 980000000 },
+        { "word": "JavaScript", "hit_count": 1100000000 },
+        { "word": "夏", "hit_count": 1200000000 },
+        { "word": "iPhone", "hit_count": 2100000000 },
+        { "word": "Android", "hit_count": 2800000000 }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,49 @@
+{
+  "home": {
+    "greeting": "Hello!",
+    "subtitle": "Play with search hit counts. Which mode today?",
+    "settings": "Settings",
+    "profile": "Profile"
+  },
+  "tutorial": {
+    "welcome_title": "Welcome!",
+    "welcome_body": "A game world built around search hit counts.",
+    "what_is_hit_title": "What is a hit count?",
+    "what_is_hit_body": "The number of pages a Google search returns. More hits = more popular.",
+    "lets_go_title": "Let's go!",
+    "lets_go_body": "Start with 'Which is bigger?' — pick the word with more search hits.",
+    "next": "Next",
+    "start": "Start"
+  },
+  "modes": {
+    "compare": "Which is bigger?",
+    "speed": "Quickdraw Kensaku",
+    "panel9": "Kensaku Panel 9",
+    "stairs": "Climbing Kensaku",
+    "_note": "Names are codenames; final English titles TBD."
+  },
+  "common": {
+    "score": "Score",
+    "combo": "Combo",
+    "best": "Best",
+    "correct": "Correct!",
+    "wrong": "Wrong…",
+    "next": "Next",
+    "retry": "Retry",
+    "home": "Home",
+    "result": "Result"
+  },
+  "settings": {
+    "sound": "Sound",
+    "bgm": "Music",
+    "sfx": "SFX",
+    "haptic": "Haptic",
+    "haptic_enabled": "Haptic feedback",
+    "display": "Display",
+    "color_scheme": "Color scheme",
+    "system": "Auto",
+    "light": "Light",
+    "dark": "Dark",
+    "language": "Language"
+  }
+}

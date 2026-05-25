@@ -1,0 +1,13 @@
+appId: com.andokensaku.app
+---
+- launchApp:
+    clearState: true
+- assertVisible: "ようこそ!"
+- tapOn: "つぎへ"
+- tapOn: "つぎへ"
+- tapOn: "はじめる"
+- assertVisible: "こんにちは!"
+- assertVisible: "どちらが多い?"
+- assertVisible: "早打ちケンサク銃士"
+- assertVisible: "ケンサク!パネル9"
+- assertVisible: "のぼるケンサク階段"

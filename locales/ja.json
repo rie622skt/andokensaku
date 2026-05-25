@@ -1,0 +1,48 @@
+{
+  "home": {
+    "greeting": "こんにちは!",
+    "subtitle": "検索ヒット数で遊ぼう。今日はどのモードにする?",
+    "settings": "設定",
+    "profile": "プロフィール"
+  },
+  "tutorial": {
+    "welcome_title": "ようこそ!",
+    "welcome_body": "ここは、検索のヒット数で遊ぶゲームの世界だよ。",
+    "what_is_hit_title": "ヒット数って?",
+    "what_is_hit_body": "言葉をWebで検索したときに見つかるページの数のこと。多いほど人気な単語と考えてOK。",
+    "lets_go_title": "やってみよう!",
+    "lets_go_body": "まずは『どちらが多い?』モードから。ふたつの言葉、どっちが検索結果が多そうかを当てるだけ。",
+    "next": "つぎへ",
+    "start": "はじめる"
+  },
+  "modes": {
+    "compare": "どちらが多い?",
+    "speed": "早打ちケンサク銃士",
+    "panel9": "ケンサク!パネル9",
+    "stairs": "のぼるケンサク階段"
+  },
+  "common": {
+    "score": "スコア",
+    "combo": "コンボ",
+    "best": "ベスト",
+    "correct": "正解!",
+    "wrong": "残念…",
+    "next": "つぎへ",
+    "retry": "もう一度",
+    "home": "ホームへ",
+    "result": "リザルトへ"
+  },
+  "settings": {
+    "sound": "サウンド",
+    "bgm": "BGM",
+    "sfx": "効果音",
+    "haptic": "触覚",
+    "haptic_enabled": "振動フィードバック",
+    "display": "表示",
+    "color_scheme": "カラーモード",
+    "system": "自動",
+    "light": "ライト",
+    "dark": "ダーク",
+    "language": "言語"
+  }
+}

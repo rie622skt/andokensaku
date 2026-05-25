@@ -1,0 +1,14 @@
+appId: com.andokensaku.app
+---
+- launchApp
+- runFlow: smoke-home.yaml
+- tapOn: "どちらが多い?"
+- assertVisible: "VS"
+- assertVisible: "スコア"
+# 答えのどちらかを選び、リビールが出ることを確認
+- tapOn:
+    point: "30%, 50%"
+- assertVisible:
+    text: "正解!|残念…"
+    enabled: true
+- tapOn: "つぎへ"

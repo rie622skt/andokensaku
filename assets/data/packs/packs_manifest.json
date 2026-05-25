@@ -1,0 +1,37 @@
+{
+  "schema_version": 1,
+  "packs": [
+    {
+      "id": "compare_v1",
+      "mode": "compare",
+      "version": 1,
+      "question_count": 10,
+      "created_at": "2026-05-24T00:00:00Z",
+      "min_app_version": "0.1.0"
+    },
+    {
+      "id": "speed_v1",
+      "mode": "speed",
+      "version": 1,
+      "question_count": 2,
+      "created_at": "2026-05-24T00:00:00Z",
+      "min_app_version": "0.1.0"
+    },
+    {
+      "id": "panel9_v1",
+      "mode": "panel9",
+      "version": 1,
+      "question_count": 1,
+      "created_at": "2026-05-24T00:00:00Z",
+      "min_app_version": "0.1.0"
+    },
+    {
+      "id": "stairs_v1",
+      "mode": "stairs",
+      "version": 1,
+      "question_count": 1,
+      "created_at": "2026-05-24T00:00:00Z",
+      "min_app_version": "0.1.0"
+    }
+  ]
+}

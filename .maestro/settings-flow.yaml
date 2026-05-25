@@ -1,0 +1,12 @@
+appId: com.andokensaku.app
+---
+- launchApp
+- runFlow: smoke-home.yaml
+- tapOn: "設定"
+- assertVisible: "BGM"
+- assertVisible: "効果音"
+- assertVisible: "振動フィードバック"
+- assertVisible: "カラーモード"
+- assertVisible: "言語"
+- back
+- assertVisible: "こんにちは!"
