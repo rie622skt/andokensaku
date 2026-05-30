@@ -27,6 +27,10 @@ export const lightColors = {
   surfaceMuted: "#F7F7F7",
   border: "#E5E5E5",
 
+  // Tinted highlight surfaces (e.g. a winning card).
+  successSurface: "#E8F8DE",
+  errorSurface: "#FCE4E4",
+
   overlay: "rgba(0,0,0,0.4)",
 };
 
@@ -41,6 +45,9 @@ export const darkColors: Palette = {
   surface: "#1F2D33",
   surfaceMuted: "#131F24",
   border: "#37464F",
+
+  successSurface: "#21402A",
+  errorSurface: "#4A2330",
 
   overlay: "rgba(0,0,0,0.6)",
 };

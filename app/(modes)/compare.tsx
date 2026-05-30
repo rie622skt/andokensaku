@@ -318,7 +318,7 @@ const useStyles = makeUseStyles((colors) => ({
     transform: [{ scale: 0.98 }],
   },
   cardWinner: {
-    backgroundColor: "#E8F8DE",
+    backgroundColor: colors.successSurface,
     borderColor: colors.success,
   },
   cardLoser: {

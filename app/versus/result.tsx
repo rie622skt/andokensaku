@@ -205,7 +205,7 @@ const useStyles = makeUseStyles((colors) => ({
     justifyContent: "center",
   },
   scoreCardWin: {
-    backgroundColor: "#E8F8DE",
+    backgroundColor: colors.successSurface,
   },
   crown: {
     fontSize: 24,

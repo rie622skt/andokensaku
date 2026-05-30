@@ -222,7 +222,7 @@ export default function StairsScreen() {
 
         {finished && lastJudgement?.correct === false && (
           <View style={styles.feedback}>
-            <Text style={[textVariants.bodyMd, { color: colors.surface }]}>
+            <Text style={[textVariants.bodyMd, { color: colors.textInverse }]}>
               正解は「{lastJudgement.expected.word}」(
               {formatHitCountJa(lastJudgement.expected.hit_count)}件) でした。
             </Text>
