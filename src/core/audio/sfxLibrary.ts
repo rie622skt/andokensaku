@@ -8,17 +8,18 @@ export type SfxName =
   | "stairsUp"
   | "panelFlip";
 
-// NOTE: paths point to assets/audio/sfx/*.wav. Assets are loaded lazily by
-// audioService. Files do not exist yet — they ship in Week 2 along with
-// the first SFX pass.
+// Short synthesized cues bundled at assets/audio/sfx/*.wav. Loaded lazily by
+// audioService and scaled by the sfxVolume preference. Replace any file to
+// swap a sound.
+/* eslint-disable @typescript-eslint/no-require-imports */
 export const sfxAssetPaths: Record<SfxName, number | null> = {
-  // eslint-disable-next-line @typescript-eslint/no-require-imports
-  tap: null,
-  correct: null,
-  wrong: null,
-  combo: null,
-  tick: null,
-  clearJingle: null,
-  stairsUp: null,
-  panelFlip: null,
+  tap: require("../../../assets/audio/sfx/tap.wav"),
+  correct: require("../../../assets/audio/sfx/correct.wav"),
+  wrong: require("../../../assets/audio/sfx/wrong.wav"),
+  combo: require("../../../assets/audio/sfx/combo.wav"),
+  tick: require("../../../assets/audio/sfx/tick.wav"),
+  clearJingle: require("../../../assets/audio/sfx/clearJingle.wav"),
+  stairsUp: require("../../../assets/audio/sfx/stairsUp.wav"),
+  panelFlip: require("../../../assets/audio/sfx/panelFlip.wav"),
 };
+/* eslint-enable @typescript-eslint/no-require-imports */

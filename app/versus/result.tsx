@@ -11,6 +11,7 @@ import {
 import { useVersusStore } from "@/features/versus/store";
 import type { VersusMode } from "@/features/versus/store";
 import type { Mode } from "@/data/models";
+import { useSfx } from "@/shared/hooks/useSfx";
 import {
   makeUseStyles,
   modeColor,
@@ -47,9 +48,15 @@ export default function VersusResultScreen() {
   const reset = useVersusStore((s) => s.reset);
   const styles = useStyles();
   const { colors } = useTheme();
+  const sfx = useSfx();
 
   const result = winner();
   const accent = mode ? modeColor(mode) : colors.primary;
+
+  React.useEffect(() => {
+    sfx(result === "tie" ? "correct" : "clearJingle");
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const headline =
     result === "tie"

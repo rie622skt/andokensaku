@@ -37,12 +37,25 @@ export default function Root({ children }: PropsWithChildren) {
 
         <ScrollViewStyleReset />
 
+        <style dangerouslySetInnerHTML={{ __html: baseColorCss }} />
+
         <script dangerouslySetInnerHTML={{ __html: swRegistration }} />
       </head>
       <body>{children}</body>
     </html>
   );
 }
+
+// 初期描画（JS ハイドレーション前）のチラつき防止。OS のカラー設定に追従し、
+// アプリ起動後は ThemeProvider がユーザー設定で上書きする。
+const baseColorCss = `
+:root { background-color: #F7F7F7; color: #3C3C3C; color-scheme: light dark; }
+body { background-color: #F7F7F7; color: #3C3C3C; }
+@media (prefers-color-scheme: dark) {
+  :root { background-color: #131F24; color: #F1F7FB; }
+  body { background-color: #131F24; color: #F1F7FB; }
+}
+`;
 
 // 開発時の SW キャッシュ事故を防ぐため、本番ホストでのみ登録する。
 // localhost / 127.0.0.1 / file: で開かれた場合は登録せず、既存の SW があれば

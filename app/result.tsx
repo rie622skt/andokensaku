@@ -10,6 +10,7 @@ import {
 } from "@/shared/components";
 import { progressRepository } from "@/data/repositories/progressRepository";
 import type { Mode } from "@/data/models";
+import { useSfx } from "@/shared/hooks/useSfx";
 import {
   makeUseStyles,
   modeColor,
@@ -37,6 +38,13 @@ export default function ResultScreen() {
   const isNewBest = score >= progress.bestScore && score > 0;
   const styles = useStyles();
   const { colors } = useTheme();
+  const sfx = useSfx();
+
+  React.useEffect(() => {
+    sfx(isNewBest ? "clearJingle" : "correct");
+    // Play once on result mount.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <Screen padded background={colors.surface}>
