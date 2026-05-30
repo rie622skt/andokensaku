@@ -25,6 +25,11 @@ export function useBackgroundMusic(): void {
     void audioService.playBgm(BGM_ASSET, vol);
   }, []);
 
+  // Warm up the SFX players once so the first cue plays without load latency.
+  React.useEffect(() => {
+    audioService.preloadSfx();
+  }, []);
+
   // Initial start: native immediately, web on first interaction.
   React.useEffect(() => {
     if (Platform.OS === "web") {

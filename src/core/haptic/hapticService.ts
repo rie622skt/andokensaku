@@ -10,9 +10,33 @@ export type HapticEvent =
   | "mediumImpact"
   | "heavyImpact";
 
+// Web Vibration API patterns (ms). Works on Android Chrome after a user
+// gesture; iOS Safari has no vibration API and silently ignores these.
+const WEB_VIBRATION: Record<HapticEvent, number | number[]> = {
+  selection: 10,
+  success: [12, 40, 24],
+  error: [40, 30, 40],
+  warning: 25,
+  lightImpact: 10,
+  mediumImpact: 20,
+  heavyImpact: 35,
+};
+
 class HapticService {
   async trigger(event: HapticEvent): Promise<void> {
-    if (Platform.OS === "web") return;
+    if (Platform.OS === "web") {
+      try {
+        if (
+          typeof navigator !== "undefined" &&
+          typeof navigator.vibrate === "function"
+        ) {
+          navigator.vibrate(WEB_VIBRATION[event]);
+        }
+      } catch {
+        // best-effort
+      }
+      return;
+    }
     try {
       switch (event) {
         case "selection":

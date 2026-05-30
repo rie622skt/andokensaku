@@ -9,7 +9,24 @@ class AudioService {
   private bgmPlayer: AudioPlayer | null = null;
   private bgmVolume = 0.5;
 
-  async playSfx(name: SfxName, volume: number): Promise<void> {
+  /**
+   * Create (and start loading) every bundled SFX player ahead of time so the
+   * first play has no load latency. Safe to call before any user gesture —
+   * only playback needs a gesture, not loading.
+   */
+  preloadSfx(): void {
+    for (const name of Object.keys(sfxAssetPaths) as SfxName[]) {
+      const asset = sfxAssetPaths[name];
+      if (asset == null || this.sfxPlayers[name]) continue;
+      try {
+        this.sfxPlayers[name] = { player: createAudioPlayer(asset) };
+      } catch {
+        // best-effort
+      }
+    }
+  }
+
+  playSfx(name: SfxName, volume: number): void {
     const asset = sfxAssetPaths[name];
     if (asset == null) {
       // Asset not bundled yet — SFX layer is plumbed but silent.
@@ -18,12 +35,12 @@ class AudioService {
     try {
       let entry = this.sfxPlayers[name];
       if (!entry) {
-        const player = createAudioPlayer(asset);
-        entry = { player };
+        entry = { player: createAudioPlayer(asset) };
         this.sfxPlayers[name] = entry;
       }
       entry.player.volume = volume;
-      await entry.player.seekTo(0);
+      // Restart from the beginning without awaiting (lowest latency).
+      void entry.player.seekTo(0);
       entry.player.play();
     } catch {
       // best-effort

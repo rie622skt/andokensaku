@@ -55,7 +55,14 @@ export type TextVariant =
   | "caption"
   | "number";
 
-export const textVariants: Record<TextVariant, TextStyle> = {
+// react-native-web gives <Text> an explicit default color of black (it does
+// NOT inherit), so a root color cascade can't reach top-level text. Instead we
+// default every variant's color to a CSS variable that ThemeProvider sets per
+// scheme; any explicit color passed later in a style array still overrides it.
+const webDefaultColor: TextStyle =
+  Platform.OS === "web" ? { color: "var(--app-text, #3C3C3C)" } : {};
+
+const baseVariants: Record<TextVariant, TextStyle> = {
   displayLg: {
     fontFamily: fontFamilies.heading,
     ...w("700"),
@@ -132,3 +139,12 @@ export const textVariants: Record<TextVariant, TextStyle> = {
     fontVariant: ["tabular-nums"],
   },
 };
+
+// Merge the web default text color into every variant (variant-defined colors,
+// of which there are none, would still win).
+export const textVariants = Object.fromEntries(
+  Object.entries(baseVariants).map(([key, style]) => [
+    key,
+    { ...webDefaultColor, ...style },
+  ]),
+) as Record<TextVariant, TextStyle>;

@@ -49,11 +49,11 @@ export default function Root({ children }: PropsWithChildren) {
 // 初期描画（JS ハイドレーション前）のチラつき防止。OS のカラー設定に追従し、
 // アプリ起動後は ThemeProvider がユーザー設定で上書きする。
 const baseColorCss = `
-:root { background-color: #F7F7F7; color: #3C3C3C; color-scheme: light dark; }
-body { background-color: #F7F7F7; color: #3C3C3C; }
+:root { --app-text: #3C3C3C; background-color: #F7F7F7; color-scheme: light dark; }
+body { background-color: #F7F7F7; }
 @media (prefers-color-scheme: dark) {
-  :root { background-color: #131F24; color: #F1F7FB; }
-  body { background-color: #131F24; color: #F1F7FB; }
+  :root { --app-text: #F1F7FB; background-color: #131F24; }
+  body { background-color: #131F24; }
 }
 `;
 

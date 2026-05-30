@@ -30,19 +30,18 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     [scheme],
   );
 
-  // On web, react-native-web text defaults to `color: inherit`, so setting the
-  // root color cascades the themed text color to every otherwise-uncolored
-  // <Text>. This is what makes dark-mode text legible.
+  // react-native-web gives <Text> an explicit black default color, so the
+  // themed text color is driven by a CSS variable (--app-text) that every text
+  // variant defaults to. Update it (and the page background) per scheme.
   React.useEffect(() => {
     if (Platform.OS !== "web" || typeof document === "undefined") return;
     const { colors } = value;
     const root = document.documentElement;
+    root.style.setProperty("--app-text", colors.textPrimary);
     root.style.backgroundColor = colors.surfaceMuted;
-    root.style.color = colors.textPrimary;
     root.style.setProperty("color-scheme", scheme);
     if (document.body) {
       document.body.style.backgroundColor = colors.surfaceMuted;
-      document.body.style.color = colors.textPrimary;
     }
   }, [value, scheme]);
 
