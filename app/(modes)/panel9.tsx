@@ -1,4 +1,4 @@
-import { useRouter } from "expo-router";
+import { useLocalSearchParams, useRouter } from "expo-router";
 import React from "react";
 import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 
@@ -14,7 +14,8 @@ import type { FeedbackKind } from "@/shared/components";
 import { useHaptic } from "@/shared/hooks/useHaptic";
 import { useSfx } from "@/shared/hooks/useSfx";
 import { usePanel9Store } from "@/features/panel9/store";
-import type { PanelState } from "@/features/panel9/engine";
+import { useVersusStore } from "@/features/versus/store";
+import type { PanelState, FinalScore } from "@/features/panel9/engine";
 import { countLines } from "@/features/panel9/engine";
 import {
   colors,
@@ -24,10 +25,18 @@ import {
   textVariants,
 } from "@/shared/theme";
 
+/** Per-player score derived from a FinalScore: lines dominate, then tiles. */
+function sideScore(lines: number, tiles: number): number {
+  return lines * 1000 + tiles * 80;
+}
+
 export default function Panel9Screen() {
   const router = useRouter();
   const haptic = useHaptic();
   const sfx = useSfx();
+  const params = useLocalSearchParams<{ players?: string }>();
+  const isVersus = params.players === "2";
+  const setVersusScores = useVersusStore((s) => s.setScores);
   const {
     panels,
     hand,
@@ -39,19 +48,21 @@ export default function Panel9Screen() {
     result,
     start,
     playerPlay,
+    p2Play,
     cpuPlay,
     reset,
   } = usePanel9Store();
   const [selectedHand, setSelectedHand] = React.useState<string | null>(null);
+  const navigatedRef = React.useRef(false);
 
   React.useEffect(() => {
-    start("normal");
+    start("normal", undefined, isVersus);
     return () => reset();
-  }, [start, reset]);
+  }, [start, reset, isVersus]);
 
-  // Drive CPU turns after each player move.
+  // Drive CPU turns after each player move (solo only — in 2P, player 2 plays).
   React.useEffect(() => {
-    if (turn === "cpu" && !finished) {
+    if (!isVersus && turn === "cpu" && !finished) {
       const t = setTimeout(() => {
         const r = cpuPlay();
         if (r?.conquered) {
@@ -63,28 +74,50 @@ export default function Panel9Screen() {
       return () => clearTimeout(t);
     }
     return;
-  }, [turn, finished, cpuPlay, haptic, sfx]);
+  }, [isVersus, turn, finished, cpuPlay, haptic, sfx]);
+
+  const goToResult = React.useCallback(
+    (fs: FinalScore) => {
+      if (navigatedRef.current) return;
+      navigatedRef.current = true;
+      if (isVersus) {
+        setVersusScores(
+          "panel9",
+          sideScore(fs.playerLines, fs.playerTiles),
+          sideScore(fs.cpuLines, fs.cpuTiles),
+        );
+        router.replace("/versus/result");
+      } else {
+        router.replace({
+          pathname: "/result",
+          params: { mode: "panel9", score: String(fs.score) },
+        });
+      }
+    },
+    [isVersus, setVersusScores, router],
+  );
 
   React.useEffect(() => {
     if (finished && result) {
-      const t = setTimeout(() => {
-        router.replace({
-          pathname: "/result",
-          params: { mode: "panel9", score: String(result.score) },
-        });
-      }, 1200);
+      const t = setTimeout(() => goToResult(result), 1200);
       return () => clearTimeout(t);
     }
     return;
-  }, [finished, result, router]);
+  }, [finished, result, goToResult]);
 
   const onPanelTap = (panelIndex: number) => {
-    if (turn !== "player" || finished) return;
+    if (finished) return;
     if (!selectedHand) {
       haptic("warning");
       return;
     }
-    const r = playerPlay(panelIndex, selectedHand);
+    // P1 plays on the "player" turn; in 2P, P2 plays on the "cpu" turn.
+    const r =
+      turn === "player"
+        ? playerPlay(panelIndex, selectedHand)
+        : isVersus
+          ? p2Play(panelIndex, selectedHand)
+          : null;
     if (!r) return;
     if (r.conquered) {
       haptic("success");
@@ -101,8 +134,16 @@ export default function Panel9Screen() {
     <Screen padded>
       <View style={styles.hud}>
         <ScoreChip label="ラウンド" value={`${round + 1} / ${totalRounds}`} />
-        <ScoreChip label="自陣" value={lines.playerLines} tone="success" />
-        <ScoreChip label="CPU" value={lines.cpuLines} tone="error" />
+        <ScoreChip
+          label={isVersus ? "P1" : "自陣"}
+          value={lines.playerLines}
+          tone="success"
+        />
+        <ScoreChip
+          label={isVersus ? "P2" : "CPU"}
+          value={lines.cpuLines}
+          tone="error"
+        />
       </View>
 
       <Text
@@ -113,7 +154,13 @@ export default function Panel9Screen() {
         ]}
         accessibilityLiveRegion="polite"
       >
-        {turn === "player" ? "あなたのターン" : "思考中…"}
+        {isVersus
+          ? turn === "player"
+            ? "プレイヤー1 の番"
+            : "プレイヤー2 の番"
+          : turn === "player"
+            ? "あなたのターン"
+            : "思考中…"}
       </Text>
 
       <View style={styles.boardWrap}>
@@ -189,29 +236,39 @@ export default function Panel9Screen() {
       {finished && result && (
         <View style={styles.summary}>
           <MascotView
-            state={result.winner === "player" ? "celebrate" : "sad"}
+            state={
+              isVersus
+                ? result.winner === "tie"
+                  ? "idle"
+                  : "celebrate"
+                : result.winner === "player"
+                  ? "celebrate"
+                  : "sad"
+            }
             size={80}
           />
           <Text style={textVariants.headingMd}>
-            {result.winner === "player"
-              ? "勝利!"
-              : result.winner === "tie"
+            {isVersus
+              ? result.winner === "tie"
                 ? "引き分け"
-                : "敗北…"}
+                : result.winner === "player"
+                  ? "プレイヤー1 の勝ち!"
+                  : "プレイヤー2 の勝ち!"
+              : result.winner === "player"
+                ? "勝利!"
+                : result.winner === "tie"
+                  ? "引き分け"
+                  : "敗北…"}
           </Text>
-          <PrimaryButton
-            label="結果へ進む"
-            onPress={() =>
-              router.replace({
-                pathname: "/result",
-                params: { mode: "panel9", score: String(result.score) },
-              })
-            }
-          />
+          <PrimaryButton label="結果へ進む" onPress={() => goToResult(result)} />
         </View>
       )}
 
-      <ConfettiOverlay visible={!!result && result.winner === "player"} />
+      <ConfettiOverlay
+        visible={
+          !!result && (isVersus ? result.winner !== "tie" : result.winner === "player")
+        }
+      />
     </Screen>
   );
 }

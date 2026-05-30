@@ -10,6 +10,8 @@ import {
 
 import { MascotView, Screen } from "@/shared/components";
 import { usePreferences } from "@/core/storage/preferences";
+import { useVersusStore } from "@/features/versus/store";
+import type { VersusMode } from "@/features/versus/store";
 import { markStartup } from "@/core/utils/startupTimer";
 import { colors, modeColor, radii, shadows, spacing, textVariants } from "@/shared/theme";
 
@@ -54,15 +56,31 @@ const MODES: readonly ModeCard[] = [
   },
 ];
 
+const SEQUENTIAL_MODES: readonly Mode[] = ["compare", "speed", "stairs"];
+
 export default function HomeScreen() {
   const router = useRouter();
   const tutorialDone = usePreferences((s) => s.tutorialCompleted);
+  const beginVersus = useVersusStore((s) => s.begin);
   const { width } = useWindowDimensions();
   const isWide = width >= 600;
+  const [players, setPlayers] = React.useState<1 | 2>(1);
 
   React.useEffect(() => {
     markStartup("HomeScreen first render");
   }, []);
+
+  const onPickMode = (mode: ModeCard) => {
+    if (players === 2) {
+      // Sequential modes need a fixed shared seed; panel9 plays one live board.
+      if (SEQUENTIAL_MODES.includes(mode.id)) {
+        beginVersus(mode.id as VersusMode);
+      }
+      router.push({ pathname: mode.route, params: { players: "2" } });
+    } else {
+      router.push(mode.route);
+    }
+  };
 
   if (!tutorialDone) {
     return <Redirect href="/tutorial" />;
@@ -85,11 +103,48 @@ export default function HomeScreen() {
         </View>
       </View>
 
+      <View
+        style={styles.playerToggle}
+        accessibilityRole="radiogroup"
+        accessibilityLabel="プレイ人数"
+      >
+        {([1, 2] as const).map((n) => (
+          <Pressable
+            key={n}
+            onPress={() => setPlayers(n)}
+            style={[
+              styles.toggleOption,
+              players === n && styles.toggleOptionActive,
+            ]}
+            accessibilityRole="radio"
+            accessibilityState={{ selected: players === n }}
+            accessibilityLabel={n === 1 ? "ひとりで遊ぶ" : "ふたりで遊ぶ"}
+          >
+            <Text
+              style={[
+                textVariants.buttonMd,
+                players === n
+                  ? { color: colors.textInverse }
+                  : { color: colors.textSecondary },
+              ]}
+            >
+              {n === 1 ? "👤 ひとり" : "👥 ふたり"}
+            </Text>
+          </Pressable>
+        ))}
+      </View>
+
+      {players === 2 && (
+        <Text style={[textVariants.bodySm, styles.toggleHint]}>
+          同じ端末を交代しながら対戦します。
+        </Text>
+      )}
+
       <View style={[styles.modeGrid, isWide && styles.modeGridWide]}>
         {MODES.map((mode) => (
           <Pressable
             key={mode.id}
-            onPress={() => router.push(mode.route)}
+            onPress={() => onPickMode(mode)}
             style={({ pressed }) => [
               styles.card,
               isWide && styles.cardWide,
@@ -144,6 +199,30 @@ const styles = StyleSheet.create({
   greeting: {
     flex: 1,
     marginLeft: spacing.lg,
+  },
+  playerToggle: {
+    flexDirection: "row",
+    backgroundColor: colors.surface,
+    borderRadius: radii.pill,
+    padding: spacing.xs,
+    marginBottom: spacing.md,
+    ...shadows.card,
+  },
+  toggleOption: {
+    flex: 1,
+    paddingVertical: spacing.sm,
+    alignItems: "center",
+    borderRadius: radii.pill,
+    minHeight: 44,
+    justifyContent: "center",
+  },
+  toggleOptionActive: {
+    backgroundColor: colors.primary,
+  },
+  toggleHint: {
+    color: colors.textSecondary,
+    textAlign: "center",
+    marginBottom: spacing.lg,
   },
   modeGrid: {
     gap: spacing.lg,

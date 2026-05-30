@@ -1,4 +1,4 @@
-import { useRouter } from "expo-router";
+import { useLocalSearchParams, useRouter } from "expo-router";
 import { MotiView } from "moti";
 import React from "react";
 import { StyleSheet, Text, View } from "react-native";
@@ -15,6 +15,7 @@ import type { FeedbackKind } from "@/shared/components";
 import { useHaptic } from "@/shared/hooks/useHaptic";
 import { useSfx } from "@/shared/hooks/useSfx";
 import { useSpeedStore } from "@/features/speed/store";
+import { useVersusStore } from "@/features/versus/store";
 import {
   colors,
   radii,
@@ -29,6 +30,11 @@ export default function SpeedScreen() {
   const router = useRouter();
   const haptic = useHaptic();
   const sfx = useSfx();
+  const params = useLocalSearchParams<{ players?: string }>();
+  const isVersus = params.players === "2";
+  const versusSeed = useVersusStore((s) => s.seed);
+  const versusCurrent = useVersusStore((s) => s.current);
+  const reportScore = useVersusStore((s) => s.reportScore);
   const {
     round,
     currentWord,
@@ -45,9 +51,9 @@ export default function SpeedScreen() {
   } = useSpeedStore();
 
   React.useEffect(() => {
-    start();
+    start(isVersus ? versusSeed ?? undefined : undefined, isVersus);
     return () => reset();
-  }, [start, reset]);
+  }, [start, reset, isVersus, versusSeed]);
 
   React.useEffect(() => {
     if (finished) return;
@@ -58,15 +64,22 @@ export default function SpeedScreen() {
   React.useEffect(() => {
     if (finished) {
       const t = setTimeout(() => {
-        router.replace({
-          pathname: "/result",
-          params: { mode: "speed", score: String(score) },
-        });
+        if (isVersus) {
+          const nextPhase = reportScore(score);
+          router.replace(
+            nextPhase === "handoff" ? "/versus/handoff" : "/versus/result",
+          );
+        } else {
+          router.replace({
+            pathname: "/result",
+            params: { mode: "speed", score: String(score) },
+          });
+        }
       }, 800);
       return () => clearTimeout(t);
     }
     return;
-  }, [finished, router, score]);
+  }, [finished, router, score, isVersus, reportScore]);
 
   const [feedback, setFeedback] = React.useState<FeedbackKind>(null);
   const [feedbackTick, setFeedbackTick] = React.useState(0);
@@ -102,6 +115,14 @@ export default function SpeedScreen() {
 
   return (
     <Screen padded>
+      {isVersus && (
+        <Text
+          style={[textVariants.headingMd, styles.versusBanner]}
+          accessibilityLiveRegion="polite"
+        >
+          プレイヤー{versusCurrent} の番
+        </Text>
+      )}
       <View style={styles.hud}>
         <ScoreChip label="スコア" value={score} />
         <ScoreChip label="コンボ" value={`${combo}x`} tone="warning" />
@@ -159,6 +180,11 @@ export default function SpeedScreen() {
 }
 
 const styles = StyleSheet.create({
+  versusBanner: {
+    textAlign: "center",
+    color: colors.primary,
+    marginBottom: spacing.sm,
+  },
   hud: {
     flexDirection: "row",
     justifyContent: "space-between",

@@ -23,7 +23,9 @@ interface CompareState {
   bestCombo: number;
   lastJudgement: CompareJudgement | null;
   finished: boolean;
-  start: (questionsCount?: number, seed?: number) => void;
+  /** When true, results are NOT recorded to solo best scores. */
+  versus: boolean;
+  start: (questionsCount?: number, seed?: number, versus?: boolean) => void;
   answer: (choice: CompareChoice) => CompareJudgement | null;
   next: () => void;
   reset: () => void;
@@ -42,8 +44,9 @@ export const useCompareStore = create<CompareState>((set, get) => ({
   bestCombo: 0,
   lastJudgement: null,
   finished: false,
+  versus: false,
 
-  start: (questionsCount = DEFAULT_COUNT, seed = Date.now()) => {
+  start: (questionsCount = DEFAULT_COUNT, seed = Date.now(), versus = false) => {
     const pack = questionRepository.getComparePack();
     const rng = createRng(seed);
     const queue = sampleN(pack.questions, questionsCount, rng);
@@ -58,6 +61,7 @@ export const useCompareStore = create<CompareState>((set, get) => ({
       bestCombo: 0,
       lastJudgement: null,
       finished: queue.length === 0,
+      versus,
     });
   },
 
@@ -84,7 +88,9 @@ export const useCompareStore = create<CompareState>((set, get) => ({
     const state = get();
     const nextIndex = state.index + 1;
     if (nextIndex >= state.queue.length) {
-      progressRepository.recordResult("compare", state.score);
+      if (!state.versus) {
+        progressRepository.recordResult("compare", state.score);
+      }
       set({
         finished: true,
         current: null,
@@ -111,5 +117,6 @@ export const useCompareStore = create<CompareState>((set, get) => ({
       bestCombo: 0,
       lastJudgement: null,
       finished: false,
+      versus: false,
     }),
 }));

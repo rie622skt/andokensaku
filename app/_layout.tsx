@@ -63,6 +63,7 @@ export default function RootLayout() {
         >
           <Stack.Screen name="index" options={{ headerShown: false }} />
           <Stack.Screen name="(modes)" options={{ headerShown: false }} />
+          <Stack.Screen name="versus" options={{ headerShown: false }} />
           <Stack.Screen
             name="tutorial"
             options={{ title: "はじめての検索バトル", presentation: "modal" }}

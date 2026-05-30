@@ -22,8 +22,10 @@ interface StairsState {
   highestStep: number;
   finished: boolean;
   lastJudgement: StairsJudgement | null;
+  /** When true, results are NOT recorded to solo best scores. */
+  versus: boolean;
 
-  start: (seed?: number) => void;
+  start: (seed?: number, versus?: boolean) => void;
   answer: (choiceIndex: number) => StairsJudgement | null;
   reset: () => void;
 }
@@ -37,8 +39,9 @@ export const useStairsStore = create<StairsState>((set, get) => ({
   highestStep: 0,
   finished: false,
   lastJudgement: null,
+  versus: false,
 
-  start: (seed = Date.now()) => {
+  start: (seed = Date.now(), versus = false) => {
     const pack = questionRepository.getStairsPack();
     const rng = createRng(seed);
     const run = sampleN(pack.runs, 1, rng)[0];
@@ -56,6 +59,7 @@ export const useStairsStore = create<StairsState>((set, get) => ({
       highestStep: 0,
       finished: steps.length === 0,
       lastJudgement: null,
+      versus,
     });
   },
 
@@ -65,7 +69,9 @@ export const useStairsStore = create<StairsState>((set, get) => ({
     const judgement = judgeStep(state.current, choiceIndex);
     if (!judgement.correct) {
       // Wrong answer ends the run.
-      progressRepository.recordResult("stairs", state.score);
+      if (!state.versus) {
+        progressRepository.recordResult("stairs", state.score);
+      }
       set({
         finished: true,
         lastJudgement: judgement,
@@ -85,7 +91,7 @@ export const useStairsStore = create<StairsState>((set, get) => ({
       lastJudgement: judgement,
       finished: nextStep === null,
     });
-    if (nextStep === null) {
+    if (nextStep === null && !state.versus) {
       progressRepository.recordResult("stairs", score);
     }
     return judgement;
@@ -101,5 +107,6 @@ export const useStairsStore = create<StairsState>((set, get) => ({
       highestStep: 0,
       finished: false,
       lastJudgement: null,
+      versus: false,
     }),
 }));

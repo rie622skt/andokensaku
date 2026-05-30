@@ -28,8 +28,10 @@ interface SpeedState {
   finished: boolean;
   questionStartedAt: number;
   lastJudgement: SpeedJudgement | null;
+  /** When true, results are NOT recorded to solo best scores. */
+  versus: boolean;
 
-  start: (seed?: number) => void;
+  start: (seed?: number, versus?: boolean) => void;
   answer: (decision: SpeedDecision) => SpeedJudgement | null;
   tick: (deltaMs: number) => void;
   finish: () => void;
@@ -53,8 +55,9 @@ export const useSpeedStore = create<SpeedState>((set, get) => ({
   finished: false,
   questionStartedAt: 0,
   lastJudgement: null,
+  versus: false,
 
-  start: (seed = Date.now()) => {
+  start: (seed = Date.now(), versus = false) => {
     const pack = questionRepository.getSpeedPack();
     const rng = createRng(seed);
     const round = sampleN(pack.rounds, 1, rng)[0];
@@ -78,6 +81,7 @@ export const useSpeedStore = create<SpeedState>((set, get) => ({
       finished: false,
       questionStartedAt: Date.now(),
       lastJudgement: null,
+      versus,
     });
   },
 
@@ -128,7 +132,9 @@ export const useSpeedStore = create<SpeedState>((set, get) => ({
   finish: () => {
     const state = get();
     if (state.finished) return;
-    progressRepository.recordResult("speed", state.score);
+    if (!state.versus) {
+      progressRepository.recordResult("speed", state.score);
+    }
     set({ finished: true, currentWord: null });
   },
 
@@ -148,5 +154,6 @@ export const useSpeedStore = create<SpeedState>((set, get) => ({
       finished: false,
       questionStartedAt: 0,
       lastJudgement: null,
+      versus: false,
     }),
 }));

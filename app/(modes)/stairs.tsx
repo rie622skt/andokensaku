@@ -1,5 +1,5 @@
 import { LinearGradient } from "expo-linear-gradient";
-import { useRouter } from "expo-router";
+import { useLocalSearchParams, useRouter } from "expo-router";
 import { MotiView } from "moti";
 import React from "react";
 import { Pressable, StyleSheet, Text, View } from "react-native";
@@ -16,6 +16,7 @@ import type { FeedbackKind } from "@/shared/components";
 import { useHaptic } from "@/shared/hooks/useHaptic";
 import { useSfx } from "@/shared/hooks/useSfx";
 import { useStairsStore } from "@/features/stairs/store";
+import { useVersusStore } from "@/features/versus/store";
 import {
   colors,
   radii,
@@ -28,6 +29,11 @@ export default function StairsScreen() {
   const router = useRouter();
   const haptic = useHaptic();
   const sfx = useSfx();
+  const params = useLocalSearchParams<{ players?: string }>();
+  const isVersus = params.players === "2";
+  const versusSeed = useVersusStore((s) => s.seed);
+  const versusCurrent = useVersusStore((s) => s.current);
+  const reportScore = useVersusStore((s) => s.reportScore);
   const {
     run,
     current,
@@ -40,24 +46,39 @@ export default function StairsScreen() {
     reset,
   } = useStairsStore();
   const [showFeedback, setShowFeedback] = React.useState(false);
+  const navigatedRef = React.useRef(false);
+
+  // Both exit paths (auto-advance and the manual "結果へ進む" button) route here.
+  // Guard against firing twice (button tap racing the auto-advance timer),
+  // which in versus would double-report the score.
+  const goToResult = React.useCallback(() => {
+    if (navigatedRef.current) return;
+    navigatedRef.current = true;
+    if (isVersus) {
+      const nextPhase = reportScore(score);
+      router.replace(
+        nextPhase === "handoff" ? "/versus/handoff" : "/versus/result",
+      );
+    } else {
+      router.replace({
+        pathname: "/result",
+        params: { mode: "stairs", score: String(score) },
+      });
+    }
+  }, [isVersus, reportScore, score, router]);
 
   React.useEffect(() => {
-    start();
+    start(isVersus ? versusSeed ?? undefined : undefined, isVersus);
     return () => reset();
-  }, [start, reset]);
+  }, [start, reset, isVersus, versusSeed]);
 
   React.useEffect(() => {
     if (finished) {
-      const t = setTimeout(() => {
-        router.replace({
-          pathname: "/result",
-          params: { mode: "stairs", score: String(score) },
-        });
-      }, 1500);
+      const t = setTimeout(goToResult, 1500);
       return () => clearTimeout(t);
     }
     return;
-  }, [finished, router, score]);
+  }, [finished, goToResult]);
 
   const onAnswer = (choiceIndex: number) => {
     if (!current || showFeedback) return;
@@ -97,6 +118,14 @@ export default function StairsScreen() {
         style={StyleSheet.absoluteFillObject}
       />
       <Screen padded background="transparent">
+        {isVersus && (
+          <Text
+            style={[textVariants.headingMd, styles.versusBanner]}
+            accessibilityLiveRegion="polite"
+          >
+            プレイヤー{versusCurrent} の番
+          </Text>
+        )}
         <View style={styles.hud}>
           <ScoreChip label="スコア" value={score} />
           <ScoreChip label="高さ" value={`${highestStep}F`} tone="success" />
@@ -196,12 +225,7 @@ export default function StairsScreen() {
             <PrimaryButton
               label="結果へ進む"
               variant="primary"
-              onPress={() =>
-                router.replace({
-                  pathname: "/result",
-                  params: { mode: "stairs", score: String(score) },
-                })
-              }
+              onPress={goToResult}
               fullWidth
             />
           </View>
@@ -234,6 +258,14 @@ function interpolateColor(
 
 const styles = StyleSheet.create({
   root: { flex: 1 },
+  versusBanner: {
+    textAlign: "center",
+    color: colors.textInverse,
+    marginBottom: spacing.sm,
+    textShadowColor: "rgba(0,0,0,0.25)",
+    textShadowOffset: { width: 0, height: 1 },
+    textShadowRadius: 2,
+  },
   hud: {
     flexDirection: "row",
     justifyContent: "space-between",

@@ -1,10 +1,11 @@
-import { useRouter } from "expo-router";
+import { useLocalSearchParams, useRouter } from "expo-router";
 import { MotiView } from "moti";
 import React from "react";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 
 import { useHaptic } from "@/shared/hooks/useHaptic";
 import { useSfx } from "@/shared/hooks/useSfx";
+import { useVersusStore } from "@/features/versus/store";
 import {
   ConfettiOverlay,
   FeedbackPulse,
@@ -46,6 +47,11 @@ export default function CompareScreen() {
   const router = useRouter();
   const haptic = useHaptic();
   const sfx = useSfx();
+  const params = useLocalSearchParams<{ players?: string }>();
+  const isVersus = params.players === "2";
+  const versusSeed = useVersusStore((s) => s.seed);
+  const versusCurrent = useVersusStore((s) => s.current);
+  const reportScore = useVersusStore((s) => s.reportScore);
   const {
     current,
     score,
@@ -63,22 +69,29 @@ export default function CompareScreen() {
   const [revealed, setRevealed] = React.useState(false);
 
   React.useEffect(() => {
-    start();
+    start(undefined, isVersus ? versusSeed ?? undefined : undefined, isVersus);
     return () => reset();
-  }, [start, reset]);
+  }, [start, reset, isVersus, versusSeed]);
 
   React.useEffect(() => {
     if (finished) {
       const t = setTimeout(() => {
-        router.replace({
-          pathname: "/result",
-          params: { mode: "compare", score: String(score) },
-        });
+        if (isVersus) {
+          const nextPhase = reportScore(score);
+          router.replace(
+            nextPhase === "handoff" ? "/versus/handoff" : "/versus/result",
+          );
+        } else {
+          router.replace({
+            pathname: "/result",
+            params: { mode: "compare", score: String(score) },
+          });
+        }
       }, 800);
       return () => clearTimeout(t);
     }
     return;
-  }, [finished, router, score]);
+  }, [finished, router, score, isVersus, reportScore]);
 
   const onChoose = (choice: "left" | "right") => {
     if (phase !== "playing" || !current) return;
@@ -114,6 +127,15 @@ export default function CompareScreen() {
 
   return (
     <Screen padded>
+      {isVersus && (
+        <Text
+          style={[textVariants.headingMd, styles.versusBanner]}
+          accessibilityLiveRegion="polite"
+        >
+          プレイヤー{versusCurrent} の番
+        </Text>
+      )}
+
       <View style={styles.hud}>
         <ScoreChip label="スコア" value={score} />
         <ScoreChip label="コンボ" value={`${combo}x`} tone="warning" />
@@ -248,6 +270,11 @@ function CompareCard({
 }
 
 const styles = StyleSheet.create({
+  versusBanner: {
+    textAlign: "center",
+    color: colors.primary,
+    marginBottom: spacing.md,
+  },
   hud: {
     flexDirection: "row",
     justifyContent: "space-between",
