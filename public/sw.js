@@ -1,4 +1,4 @@
-const VERSION = "v1";
+const VERSION = "v2";
 const STATIC_CACHE = `andokensaku-static-${VERSION}`;
 const RUNTIME_CACHE = `andokensaku-runtime-${VERSION}`;
 
