@@ -4,7 +4,7 @@ import { StyleSheet, Text, View } from "react-native";
 
 import { MascotView, PrimaryButton, Screen } from "@/shared/components";
 import { useVersusStore } from "@/features/versus/store";
-import { colors, radii, shadows, spacing, textVariants } from "@/shared/theme";
+import { makeUseStyles, radii, shadows, spacing, textVariants, useTheme } from "@/shared/theme";
 
 const MODE_ROUTE = {
   compare: "/(modes)/compare",
@@ -21,6 +21,8 @@ export default function HandoffScreen() {
   const router = useRouter();
   const mode = useVersusStore((s) => s.mode);
   const p1Score = useVersusStore((s) => s.p1Score);
+  const styles = useStyles();
+  const { colors } = useTheme();
 
   const onStart = () => {
     if (mode && mode in MODE_ROUTE) {
@@ -68,7 +70,7 @@ export default function HandoffScreen() {
   );
 }
 
-const styles = StyleSheet.create({
+const useStyles = makeUseStyles((colors) => ({
   container: {
     flex: 1,
     alignItems: "center",
@@ -101,4 +103,4 @@ const styles = StyleSheet.create({
   actions: {
     paddingBottom: spacing.lg,
   },
-});
+}));

@@ -8,7 +8,7 @@ import {
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
-import { colors, spacing } from "@/shared/theme";
+import { spacing, useTheme } from "@/shared/theme";
 
 interface Props {
   children: React.ReactNode;
@@ -26,10 +26,12 @@ export function Screen({
   children,
   scrollable = false,
   padded = true,
-  background = colors.surfaceMuted,
+  background,
   style,
   maxContentWidth = 640,
 }: Props) {
+  const { colors } = useTheme();
+  const bg = background ?? colors.surfaceMuted;
   const { width } = useWindowDimensions();
   const isWide = width >= TABLET_BREAKPOINT;
 
@@ -39,7 +41,7 @@ export function Screen({
     : {};
 
   return (
-    <SafeAreaView style={[styles.safe, { backgroundColor: background }]}>
+    <SafeAreaView style={[styles.safe, { backgroundColor: bg }]}>
       {scrollable ? (
         <ScrollView
           contentContainerStyle={[

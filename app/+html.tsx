@@ -12,6 +12,17 @@ export default function Root({ children }: PropsWithChildren) {
           content="width=device-width, initial-scale=1, viewport-fit=cover"
         />
 
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link
+          rel="preconnect"
+          href="https://fonts.gstatic.com"
+          crossOrigin="anonymous"
+        />
+        <link
+          href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@500;700&family=Noto+Sans+JP:wght@400;700&family=M+PLUS+Rounded+1c:wght@700&display=swap"
+          rel="stylesheet"
+        />
+
         <link rel="manifest" href="/manifest.webmanifest" />
         <meta name="theme-color" content="#1CB0F6" />
         <meta name="application-name" content="andokensaku" />

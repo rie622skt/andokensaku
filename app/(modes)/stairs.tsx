@@ -17,15 +17,19 @@ import { useHaptic } from "@/shared/hooks/useHaptic";
 import { useSfx } from "@/shared/hooks/useSfx";
 import { useStairsStore } from "@/features/stairs/store";
 import { useVersusStore } from "@/features/versus/store";
+import { formatHitCountJa } from "@/core/utils/formatNumber";
 import {
-  colors,
+  makeUseStyles,
   radii,
   shadows,
   spacing,
   textVariants,
+  useTheme,
 } from "@/shared/theme";
 
 export default function StairsScreen() {
+  const styles = useStyles();
+  const { colors } = useTheme();
   const router = useRouter();
   const haptic = useHaptic();
   const sfx = useSfx();
@@ -142,7 +146,7 @@ export default function StairsScreen() {
                   {current.previousWord.word}
                 </Text>
                 <Text style={[textVariants.number, styles.muted]}>
-                  {current.previousWord.hit_count.toLocaleString()}
+                  {formatHitCountJa(current.previousWord.hit_count)}
                 </Text>
               </View>
 
@@ -220,7 +224,7 @@ export default function StairsScreen() {
           <View style={styles.feedback}>
             <Text style={[textVariants.bodyMd, { color: colors.surface }]}>
               正解は「{lastJudgement.expected.word}」(
-              {lastJudgement.expected.hit_count.toLocaleString()}件) でした。
+              {formatHitCountJa(lastJudgement.expected.hit_count)}件) でした。
             </Text>
             <PrimaryButton
               label="結果へ進む"
@@ -256,7 +260,7 @@ function interpolateColor(
   return `#${((r << 16) | (g << 8) | bl).toString(16).padStart(6, "0")}`;
 }
 
-const styles = StyleSheet.create({
+const useStyles = makeUseStyles((colors) => ({
   root: { flex: 1 },
   versusBanner: {
     textAlign: "center",
@@ -320,4 +324,4 @@ const styles = StyleSheet.create({
     backgroundColor: colors.overlay,
     borderRadius: radii.lg,
   },
-});
+}));

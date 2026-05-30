@@ -1,5 +1,8 @@
-export { colors, modeColor } from "./colors";
-export type { ColorKey } from "./colors";
+export { colors, lightColors, darkColors, modeColor } from "./colors";
+export type { ColorKey, Palette } from "./colors";
+export { ThemeProvider, useTheme } from "./ThemeContext";
+export type { ActiveScheme } from "./ThemeContext";
+export { makeUseStyles } from "./makeUseStyles";
 export {
   fontFamilies,
   textVariants,

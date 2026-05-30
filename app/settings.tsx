@@ -3,10 +3,12 @@ import { Pressable, StyleSheet, Switch, Text, View } from "react-native";
 
 import { Screen } from "@/shared/components";
 import { usePreferences, type ColorScheme } from "@/core/storage/preferences";
-import { colors, radii, spacing, textVariants } from "@/shared/theme";
+import { makeUseStyles, radii, spacing, textVariants, useTheme } from "@/shared/theme";
 
 export default function SettingsScreen() {
   const prefs = usePreferences();
+  const styles = useStyles();
+  const { colors } = useTheme();
 
   return (
     <Screen scrollable padded>
@@ -65,32 +67,7 @@ export default function SettingsScreen() {
         </View>
       </Section>
 
-      <Section title="言語">
-        <View style={styles.segmentRow}>
-          {(["ja", "en"] as const).map((lang) => (
-            <Pressable
-              key={lang}
-              onPress={() => prefs.setLanguage(lang)}
-              accessibilityRole="radio"
-              accessibilityLabel={lang === "ja" ? "日本語" : "English"}
-              accessibilityState={{ selected: prefs.language === lang }}
-              style={[
-                styles.segment,
-                prefs.language === lang && styles.segmentActive,
-              ]}
-            >
-              <Text
-                style={[
-                  textVariants.buttonMd,
-                  prefs.language === lang && { color: colors.textInverse },
-                ]}
-              >
-                {lang === "ja" ? "日本語" : "English"}
-              </Text>
-            </Pressable>
-          ))}
-        </View>
-      </Section>
+      {/* 言語切替は i18n 未実装のため一旦非表示（実装後に復活させる）。 */}
     </Screen>
   );
 }
@@ -113,6 +90,7 @@ function Section({
   title: string;
   children: React.ReactNode;
 }) {
+  const styles = useStyles();
   return (
     <View style={styles.section}>
       <Text style={[textVariants.headingSm, styles.sectionTitle]}>{title}</Text>
@@ -128,6 +106,7 @@ interface SliderProps {
 }
 
 function Slider({ label, value, onChange }: SliderProps) {
+  const styles = useStyles();
   // RN core does not ship a Slider in Expo SDK 52+ — we render a 5-step
   // segmented control instead. Good enough for MVP; swap to
   // @react-native-community/slider later if needed.
@@ -160,7 +139,7 @@ function Slider({ label, value, onChange }: SliderProps) {
   );
 }
 
-const styles = StyleSheet.create({
+const useStyles = makeUseStyles((colors) => ({
   section: {
     marginBottom: spacing.xl,
   },
@@ -217,4 +196,4 @@ const styles = StyleSheet.create({
   stepDotActive: {
     backgroundColor: colors.primary,
   },
-});
+}));

@@ -18,8 +18,9 @@ import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 
 import { HeaderBackButton } from "@/shared/components";
+import { useBackgroundMusic } from "@/shared/hooks/useBackgroundMusic";
 import { markStartup } from "@/core/utils/startupTimer";
-import { colors } from "@/shared/theme";
+import { ThemeProvider, useTheme } from "@/shared/theme";
 
 markStartup("RootLayout module loaded");
 
@@ -41,6 +42,8 @@ export default function RootLayout() {
     }
   }, [fontsLoaded, fontError]);
 
+  useBackgroundMusic();
+
   if (!fontsLoaded && !fontError) {
     return null;
   }
@@ -48,35 +51,46 @@ export default function RootLayout() {
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <SafeAreaProvider>
-        <StatusBar style="auto" />
-        <Stack
-          screenOptions={{
-            headerStyle: { backgroundColor: colors.primary },
-            headerTintColor: colors.textInverse,
-            headerTitleStyle: {
-              fontFamily: "ZenMaruGothic_700Bold",
-            },
-            headerBackVisible: false,
-            headerLeft: () => <HeaderBackButton />,
-            contentStyle: { backgroundColor: colors.surfaceMuted },
-          }}
-        >
-          <Stack.Screen name="index" options={{ headerShown: false }} />
-          <Stack.Screen name="(modes)" options={{ headerShown: false }} />
-          <Stack.Screen name="versus" options={{ headerShown: false }} />
-          <Stack.Screen
-            name="tutorial"
-            options={{ title: "はじめての検索バトル", presentation: "modal" }}
-          />
-          <Stack.Screen name="result" options={{ title: "結果" }} />
-          <Stack.Screen name="settings" options={{ title: "設定" }} />
-          <Stack.Screen name="profile" options={{ title: "プロフィール" }} />
-          <Stack.Screen
-            name="+not-found"
-            options={{ title: "ページが見つかりません" }}
-          />
-        </Stack>
+        <ThemeProvider>
+          <RootNavigator />
+        </ThemeProvider>
       </SafeAreaProvider>
     </GestureHandlerRootView>
+  );
+}
+
+function RootNavigator() {
+  const { colors, scheme } = useTheme();
+  return (
+    <>
+      <StatusBar style={scheme === "dark" ? "light" : "auto"} />
+      <Stack
+        screenOptions={{
+          headerStyle: { backgroundColor: colors.primary },
+          headerTintColor: colors.textInverse,
+          headerTitleStyle: {
+            fontFamily: "ZenMaruGothic_700Bold",
+          },
+          headerBackVisible: false,
+          headerLeft: () => <HeaderBackButton />,
+          contentStyle: { backgroundColor: colors.surfaceMuted },
+        }}
+      >
+        <Stack.Screen name="index" options={{ headerShown: false }} />
+        <Stack.Screen name="(modes)" options={{ headerShown: false }} />
+        <Stack.Screen name="versus" options={{ headerShown: false }} />
+        <Stack.Screen
+          name="tutorial"
+          options={{ title: "はじめての検索バトル", presentation: "modal" }}
+        />
+        <Stack.Screen name="result" options={{ title: "結果" }} />
+        <Stack.Screen name="settings" options={{ title: "設定" }} />
+        <Stack.Screen name="profile" options={{ title: "プロフィール" }} />
+        <Stack.Screen
+          name="+not-found"
+          options={{ title: "ページが見つかりません" }}
+        />
+      </Stack>
+    </>
   );
 }

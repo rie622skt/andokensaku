@@ -4,7 +4,7 @@ import { StyleSheet, Text, View } from "react-native";
 
 import { MascotView, PrimaryButton, Screen } from "@/shared/components";
 import { usePreferences } from "@/core/storage/preferences";
-import { colors, spacing, textVariants } from "@/shared/theme";
+import { makeUseStyles, spacing, textVariants, useTheme } from "@/shared/theme";
 
 const STEPS = [
   {
@@ -29,6 +29,8 @@ export default function TutorialScreen() {
   const completeTutorial = usePreferences((s) => s.completeTutorial);
   const [stepIndex, setStepIndex] = React.useState(0);
   const step = STEPS[stepIndex] ?? STEPS[0]!;
+  const styles = useStyles();
+  const { colors } = useTheme();
 
   const onNext = () => {
     if (stepIndex < STEPS.length - 1) {
@@ -77,7 +79,7 @@ export default function TutorialScreen() {
   );
 }
 
-const styles = StyleSheet.create({
+const useStyles = makeUseStyles((colors) => ({
   container: {
     flex: 1,
     alignItems: "center",
@@ -113,4 +115,4 @@ const styles = StyleSheet.create({
     backgroundColor: colors.primary,
     width: 24,
   },
-});
+}));

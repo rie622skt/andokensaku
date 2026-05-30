@@ -12,12 +12,13 @@ import { useVersusStore } from "@/features/versus/store";
 import type { VersusMode } from "@/features/versus/store";
 import type { Mode } from "@/data/models";
 import {
-  colors,
+  makeUseStyles,
   modeColor,
   radii,
   shadows,
   spacing,
   textVariants,
+  useTheme,
 } from "@/shared/theme";
 
 const MODE_TITLES: Record<Mode, string> = {
@@ -44,6 +45,8 @@ export default function VersusResultScreen() {
   const winner = useVersusStore((s) => s.winner);
   const begin = useVersusStore((s) => s.begin);
   const reset = useVersusStore((s) => s.reset);
+  const styles = useStyles();
+  const { colors } = useTheme();
 
   const result = winner();
   const accent = mode ? modeColor(mode) : colors.primary;
@@ -140,6 +143,7 @@ function PlayerScoreCard({
   highlight,
   accent,
 }: PlayerScoreCardProps) {
+  const styles = useStyles();
   return (
     <View
       style={[
@@ -157,7 +161,7 @@ function PlayerScoreCard({
   );
 }
 
-const styles = StyleSheet.create({
+const useStyles = makeUseStyles((colors) => ({
   container: {
     flex: 1,
     alignItems: "center",
@@ -209,4 +213,4 @@ const styles = StyleSheet.create({
     paddingBottom: spacing.lg,
     paddingTop: spacing.xl,
   },
-});
+}));

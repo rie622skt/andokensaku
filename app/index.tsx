@@ -13,7 +13,7 @@ import { usePreferences } from "@/core/storage/preferences";
 import { useVersusStore } from "@/features/versus/store";
 import type { VersusMode } from "@/features/versus/store";
 import { markStartup } from "@/core/utils/startupTimer";
-import { colors, modeColor, radii, shadows, spacing, textVariants } from "@/shared/theme";
+import { makeUseStyles, modeColor, radii, shadows, spacing, textVariants, useTheme } from "@/shared/theme";
 
 type Mode = "compare" | "speed" | "panel9" | "stairs";
 
@@ -65,6 +65,8 @@ export default function HomeScreen() {
   const { width } = useWindowDimensions();
   const isWide = width >= 600;
   const [players, setPlayers] = React.useState<1 | 2>(1);
+  const styles = useStyles();
+  const { colors } = useTheme();
 
   React.useEffect(() => {
     markStartup("HomeScreen first render");
@@ -190,7 +192,7 @@ export default function HomeScreen() {
   );
 }
 
-const styles = StyleSheet.create({
+const useStyles = makeUseStyles((colors) => ({
   header: {
     flexDirection: "row",
     alignItems: "center",
@@ -265,4 +267,4 @@ const styles = StyleSheet.create({
     ...textVariants.buttonMd,
     color: colors.primary,
   },
-});
+}));

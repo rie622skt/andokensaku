@@ -11,12 +11,13 @@ import {
 import { progressRepository } from "@/data/repositories/progressRepository";
 import type { Mode } from "@/data/models";
 import {
-  colors,
+  makeUseStyles,
   modeColor,
   radii,
   shadows,
   spacing,
   textVariants,
+  useTheme,
 } from "@/shared/theme";
 
 const MODE_TITLES: Record<Mode, string> = {
@@ -34,6 +35,8 @@ export default function ResultScreen() {
 
   const progress = React.useMemo(() => progressRepository.get(mode), [mode]);
   const isNewBest = score >= progress.bestScore && score > 0;
+  const styles = useStyles();
+  const { colors } = useTheme();
 
   return (
     <Screen padded background={colors.surface}>
@@ -79,7 +82,7 @@ export default function ResultScreen() {
   );
 }
 
-const styles = StyleSheet.create({
+const useStyles = makeUseStyles((colors) => ({
   container: {
     flex: 1,
     alignItems: "center",
@@ -112,4 +115,4 @@ const styles = StyleSheet.create({
   actions: {
     paddingBottom: spacing.lg,
   },
-});
+}));

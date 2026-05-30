@@ -16,17 +16,21 @@ import { useHaptic } from "@/shared/hooks/useHaptic";
 import { useSfx } from "@/shared/hooks/useSfx";
 import { useSpeedStore } from "@/features/speed/store";
 import { useVersusStore } from "@/features/versus/store";
+import { formatHitCountJa } from "@/core/utils/formatNumber";
 import {
-  colors,
+  makeUseStyles,
   radii,
   shadows,
   spacing,
   textVariants,
+  useTheme,
 } from "@/shared/theme";
 
 const TICK_MS = 100;
 
 export default function SpeedScreen() {
+  const styles = useStyles();
+  const { colors } = useTheme();
   const router = useRouter();
   const haptic = useHaptic();
   const sfx = useSfx();
@@ -110,8 +114,8 @@ export default function SpeedScreen() {
 
   const comparatorText =
     round.comparator === "over"
-      ? `${round.threshold.toLocaleString()} 件 より多い?`
-      : `${round.threshold.toLocaleString()} 件 より少ない?`;
+      ? `${formatHitCountJa(round.threshold)}件 より多い?`
+      : `${formatHitCountJa(round.threshold)}件 より少ない?`;
 
   return (
     <Screen padded>
@@ -179,7 +183,7 @@ export default function SpeedScreen() {
   );
 }
 
-const styles = StyleSheet.create({
+const useStyles = makeUseStyles((colors) => ({
   versusBanner: {
     textAlign: "center",
     color: colors.primary,
@@ -225,4 +229,4 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
-});
+}));

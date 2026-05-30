@@ -15,14 +15,16 @@ import { useHaptic } from "@/shared/hooks/useHaptic";
 import { useSfx } from "@/shared/hooks/useSfx";
 import { usePanel9Store } from "@/features/panel9/store";
 import { useVersusStore } from "@/features/versus/store";
+import { formatHitCountJa } from "@/core/utils/formatNumber";
 import type { PanelState, FinalScore } from "@/features/panel9/engine";
 import { countLines } from "@/features/panel9/engine";
 import {
-  colors,
+  makeUseStyles,
   radii,
   shadows,
   spacing,
   textVariants,
+  useTheme,
 } from "@/shared/theme";
 
 /** Per-player score derived from a FinalScore: lines dominate, then tiles. */
@@ -31,6 +33,8 @@ function sideScore(lines: number, tiles: number): number {
 }
 
 export default function Panel9Screen() {
+  const styles = useStyles();
+  const { colors } = useTheme();
   const router = useRouter();
   const haptic = useHaptic();
   const sfx = useSfx();
@@ -280,6 +284,8 @@ interface TileProps {
 }
 
 function PanelTile({ panel, onPress, highlighted }: TileProps) {
+  const styles = useStyles();
+  const { colors } = useTheme();
   if (!panel) return <View style={styles.tile} />;
   const bg =
     panel.owner === "player"
@@ -310,14 +316,14 @@ function PanelTile({ panel, onPress, highlighted }: TileProps) {
             { color: textColor, opacity: 0.85 },
           ]}
         >
-          {panel.lastHitCount.toLocaleString()}
+          {formatHitCountJa(panel.lastHitCount)}
         </Text>
       )}
     </Pressable>
   );
 }
 
-const styles = StyleSheet.create({
+const useStyles = makeUseStyles((colors) => ({
   hud: {
     flexDirection: "row",
     justifyContent: "space-between",
@@ -384,4 +390,4 @@ const styles = StyleSheet.create({
     alignItems: "center",
     gap: spacing.md,
   },
-});
+}));

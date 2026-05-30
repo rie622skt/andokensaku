@@ -13,7 +13,7 @@ import Animated, {
   Easing,
 } from "react-native-reanimated";
 
-import { colors, radii, textVariants } from "@/shared/theme";
+import { colors, radii, textVariants, useTheme } from "@/shared/theme";
 import { useHaptic } from "@/shared/hooks/useHaptic";
 
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
@@ -45,6 +45,7 @@ export function PrimaryButton({
   accessibilityHint,
 }: PrimaryButtonProps) {
   const haptic = useHaptic();
+  const { colors: theme } = useTheme();
   const pressed = useSharedValue(0);
 
   const animatedStyle = useAnimatedStyle(() => ({
@@ -55,7 +56,15 @@ export function PrimaryButton({
     opacity: 1 - pressed.value * 0.5,
   }));
 
-  const palette = palettes[variant];
+  // Ghost is the only surface-tinted variant, so it needs the active theme.
+  const palette =
+    variant === "ghost"
+      ? {
+          fill: theme.surface,
+          shadow: theme.border,
+          label: theme.textPrimary,
+        }
+      : palettes[variant];
   const dim = sizes[size];
 
   return (
@@ -99,7 +108,7 @@ export function PrimaryButton({
         style={[
           styles.button,
           {
-            backgroundColor: disabled ? colors.border : palette.fill,
+            backgroundColor: disabled ? theme.border : palette.fill,
             paddingHorizontal: dim.padX,
             paddingVertical: dim.padY,
             borderRadius: dim.radius,

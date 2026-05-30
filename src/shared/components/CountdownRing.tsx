@@ -8,7 +8,7 @@ import Animated, {
   Easing,
 } from "react-native-reanimated";
 
-import { colors, textVariants } from "@/shared/theme";
+import { colors, textVariants, useTheme } from "@/shared/theme";
 
 const AnimatedCircle = Animated.createAnimatedComponent(Circle);
 
@@ -28,6 +28,7 @@ export function CountdownRing({
   strokeWidth = 8,
   color = colors.primary,
 }: Props) {
+  const { colors: theme } = useTheme();
   const radius = (size - strokeWidth) / 2;
   const circumference = 2 * Math.PI * radius;
   const progress = useSharedValue(1);
@@ -59,7 +60,7 @@ export function CountdownRing({
           cx={size / 2}
           cy={size / 2}
           r={radius}
-          stroke={colors.border}
+          stroke={theme.border}
           strokeWidth={strokeWidth}
           fill="transparent"
         />

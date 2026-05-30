@@ -8,15 +8,19 @@ import Animated, {
   runOnJS,
 } from "react-native-reanimated";
 
-import { colors, textVariants } from "@/shared/theme";
+import { formatHitCountJa } from "@/core/utils/formatNumber";
+import { textVariants, useTheme } from "@/shared/theme";
 
 interface Props {
   /** The final value the counter should display. */
   value: number;
   /** ms to animate 0 → value. */
   durationMs?: number;
-  /** Whether to show comma separators. */
-  formatThousands?: boolean;
+  /**
+   * Display style. "ja" collapses big numbers to 万/億 (default, readable at a
+   * glance); "thousands" shows comma-separated digits; "raw" shows plain digits.
+   */
+  format?: "ja" | "thousands" | "raw";
   fontSize?: number;
 }
 
@@ -27,9 +31,10 @@ interface Props {
 export function HitCounter({
   value,
   durationMs = 1200,
-  formatThousands = true,
+  format = "ja",
   fontSize = 32,
 }: Props) {
+  const { colors } = useTheme();
   const progress = useSharedValue(0);
   const [display, setDisplay] = React.useState(0);
 
@@ -48,15 +53,18 @@ export function HitCounter({
     },
   );
 
-  const formatted = formatThousands
-    ? display.toLocaleString("en-US")
-    : String(display);
+  const formatted =
+    format === "ja"
+      ? formatHitCountJa(display)
+      : format === "thousands"
+        ? display.toLocaleString("en-US")
+        : String(display);
 
   return (
     <Animated.View>
       <Text
-        style={[styles.text, { fontSize }]}
-        accessibilityLabel={`${value}件`}
+        style={[styles.text, { fontSize, color: colors.textPrimary }]}
+        accessibilityLabel={`${formatHitCountJa(value)}件`}
       >
         {formatted}
       </Text>
@@ -67,6 +75,5 @@ export function HitCounter({
 const styles = StyleSheet.create({
   text: {
     ...textVariants.number,
-    color: colors.textPrimary,
   },
 });

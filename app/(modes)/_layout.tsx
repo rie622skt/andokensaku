@@ -2,9 +2,10 @@ import { Stack } from "expo-router";
 import React from "react";
 
 import { HeaderBackButton } from "@/shared/components";
-import { colors } from "@/shared/theme";
+import { useTheme } from "@/shared/theme";
 
 export default function ModesLayout() {
+  const { colors } = useTheme();
   return (
     <Stack
       screenOptions={{

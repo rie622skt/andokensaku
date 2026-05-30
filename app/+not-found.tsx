@@ -2,9 +2,10 @@ import { Link, Stack } from "expo-router";
 import React from "react";
 import { StyleSheet, Text, View } from "react-native";
 
-import { colors, spacing, textVariants } from "@/shared/theme";
+import { makeUseStyles, spacing, textVariants } from "@/shared/theme";
 
 export default function NotFoundScreen() {
+  const styles = useStyles();
   return (
     <>
       <Stack.Screen options={{ title: "Not Found" }} />
@@ -18,7 +19,7 @@ export default function NotFoundScreen() {
   );
 }
 
-const styles = StyleSheet.create({
+const useStyles = makeUseStyles((colors) => ({
   container: {
     flex: 1,
     alignItems: "center",
@@ -30,4 +31,4 @@ const styles = StyleSheet.create({
     ...textVariants.buttonMd,
     color: colors.primary,
   },
-});
+}));

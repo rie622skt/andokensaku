@@ -5,12 +5,13 @@ import { MascotView, Screen } from "@/shared/components";
 import type { Mode } from "@/data/models";
 import { progressRepository } from "@/data/repositories/progressRepository";
 import {
-  colors,
+  makeUseStyles,
   modeColor,
   radii,
   shadows,
   spacing,
   textVariants,
+  useTheme,
 } from "@/shared/theme";
 
 const MODES: { id: Mode; title: string; icon: string }[] = [
@@ -22,6 +23,8 @@ const MODES: { id: Mode; title: string; icon: string }[] = [
 
 export default function ProfileScreen() {
   const all = React.useMemo(() => progressRepository.all(), []);
+  const styles = useStyles();
+  const { colors } = useTheme();
 
   const totalPlays = Object.values(all).reduce(
     (sum, p) => sum + p.playCount,
@@ -84,6 +87,8 @@ function StatBlock({
   label: string;
   value: string | number;
 }) {
+  const styles = useStyles();
+  const { colors } = useTheme();
   return (
     <View style={styles.stat}>
       <Text style={[textVariants.caption, { color: colors.textSecondary }]}>
@@ -94,7 +99,7 @@ function StatBlock({
   );
 }
 
-const styles = StyleSheet.create({
+const useStyles = makeUseStyles((colors) => ({
   header: {
     flexDirection: "row",
     alignItems: "center",
@@ -128,4 +133,4 @@ const styles = StyleSheet.create({
     flex: 1,
     gap: spacing.xxs,
   },
-});
+}));

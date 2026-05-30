@@ -17,12 +17,13 @@ import {
 } from "@/shared/components";
 import { useCompareStore } from "@/features/compare/store";
 import {
-  colors,
+  makeUseStyles,
   modeColor,
   radii,
   shadows,
   spacing,
   textVariants,
+  useTheme,
 } from "@/shared/theme";
 
 type Phase = "playing" | "reveal";
@@ -44,6 +45,8 @@ function feedbackFor(
 }
 
 export default function CompareScreen() {
+  const styles = useStyles();
+  const { colors } = useTheme();
   const router = useRouter();
   const haptic = useHaptic();
   const sfx = useSfx();
@@ -232,6 +235,8 @@ function CompareCard({
   onPress,
   accent,
 }: CompareCardProps) {
+  const styles = useStyles();
+  const { colors } = useTheme();
   return (
     <Pressable
       onPress={onPress}
@@ -269,7 +274,7 @@ function CompareCard({
   );
 }
 
-const styles = StyleSheet.create({
+const useStyles = makeUseStyles((colors) => ({
   versusBanner: {
     textAlign: "center",
     color: colors.primary,
@@ -347,4 +352,4 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     gap: spacing.lg,
   },
-});
+}));
